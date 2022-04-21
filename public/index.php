@@ -94,6 +94,14 @@ class FoodTruck {
 	 */
 	protected function filter_results() {
 
+
+		// do we need to do anything here?
+		if (! $this->type && ! $this->items) {
+			if (! $this->result) {
+				// if we don't already have some filtered results - they get everything
+				$this->result = $this->ft_data;
+			}
+		}
 		$local_result = []; // temp results storage
 
 		// have we already filtered by location?
