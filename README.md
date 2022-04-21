@@ -17,7 +17,7 @@ There are four available filters:
 - type: cart or truck
 - fooditems: currently only one item per request (e.g. chicken)
 
-If you send a location you must also send a distance and it can be a decimal such as 1.5 or .5 or 1 etc.
+If you send a location you must also send a distance (in miles) and it can be a decimal such as 1.5 or .5 or 1 etc.
 
 You can send requests via GET or POST
 
