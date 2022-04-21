@@ -8,7 +8,8 @@ use GuzzleHttp\Client;
 $food_truck = new FoodTruck();
 $f_dat      = $food_truck->process_request();
 
-print_r($f_dat);
+print json_encode($f_dat);
+exit;
 
 /*
  *
