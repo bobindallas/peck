@@ -6,9 +6,9 @@ require '../vendor/autoload.php';
 use GuzzleHttp\Client;
 
 $food_truck = new FoodTruck();
-$f_dat      = $food_truck->process_request();
+$rtn_dat    = $food_truck->process_request();
 
-print json_encode($f_dat);
+print json_encode($rtn_dat);
 exit;
 
 /*
@@ -63,7 +63,7 @@ class FoodTruck {
 	/*
 	 * if they sent a location and distance - decode lat / lon
 	 */
-	public function get_my_location() {
+	protected function get_my_location() {
 
 		// don't bother unless they entered a location and distance
 		if ($this->my_location && $this->distance) {
@@ -71,10 +71,11 @@ class FoodTruck {
 			// decode address - 3rd party (https://positionstack.com/)
 			$ps_client     = new \GuzzleHttp\Client();
 			$ps_url        = $this->ps_url . '&query=' . $this->my_location;
-			$this->ps_data = $ps_client->request('GET', $ps_url);
+			$ps_data       = $ps_client->request('GET', $ps_url);
 
-			$my_loc_data = json_decode($this->ps_data->getBody()->getContents(),1);
+			$my_loc_data = json_decode($ps_data->getBody()->getContents(),1);
 
+			// if we found it - save it
 			if (isset($my_loc_data['data'][0]['latitude']) && isset($my_loc_data['data'][0]['longitude']) ) {
 
 				$this->my_lat = $my_loc_data['data'][0]['latitude'];
@@ -91,9 +92,9 @@ class FoodTruck {
 	 * type - truck or cart
 	 * fooditems - currently just 1 item (e.g. chicken)
 	 */
-	public function filter_results() {
+	protected function filter_results() {
 
-		$local_result = []; // we return this
+		$local_result = []; // temp results storage
 
 		// have we already filtered by location?
 		$local_looper = ($this->result) ? $this->result : $this->ft_data;
@@ -102,7 +103,7 @@ class FoodTruck {
 
 			$is_match = 0;  // match tracker
 
-			// if they sent a type = match it else match by default
+			// if they sent a type - match it else match by default
 			if ($this->type) {
 
 				if (preg_match("/{$this->type}/i", $fdat['facilitytype'])) {
@@ -112,6 +113,7 @@ class FoodTruck {
 					$is_match = 1;
 			}
 
+			// looking for a food item?
 			if ($this->items && $is_match) {
 
 				if (preg_match("/{$this->items}/i", $fdat['fooditems'])) {
@@ -127,6 +129,7 @@ class FoodTruck {
 	
 		}
 	
+			// save result
 			$this->result = $local_result;
 	}
 
@@ -135,9 +138,11 @@ class FoodTruck {
 	 */
 	protected function get_distance(float $ft_lat, float $ft_lon) {
 
+		// your standard great circle distance calculation
 		$unit     = 'miles';
 		$theta    = $this->my_lat - $ft_lat;
-		$distance = (sin(deg2rad($this->my_lat)) * sin(deg2rad($ft_lat))) + (cos(deg2rad($this->my_lat)) * cos(deg2rad($ft_lat)) * cos(deg2rad($theta))); 
+		$distance = (sin(deg2rad($this->my_lat)) * sin(deg2rad($ft_lat))) +
+		          	(cos(deg2rad($this->my_lat)) * cos(deg2rad($ft_lat)) * cos(deg2rad($theta))); 
 
 		$distance = acos($distance); 
 		$distance = rad2deg($distance); 
