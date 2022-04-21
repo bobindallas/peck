@@ -20,3 +20,8 @@ There are four available filters:
 If you send a location you must also send a distance and it can be a decimal such as 1.5 or .5 or 1 etc.
 
 You can send requests via GET or POST
+
+An example address for testing is: 536 14th Street, San Francisco, CA 94103
+
+So an example GET url would look something like this:
+?my_location=536%2014th%20Street,%20San%20Francisco,%20CA%2094103&distance=.5&type=truck&fooditems=chicken
