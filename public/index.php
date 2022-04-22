@@ -42,8 +42,8 @@ class FoodTruck {
 		$this->items       = (isset($_REQUEST['fooditems'])) ? urldecode($_REQUEST['fooditems']) : null;
 
 		// would probably cache this daily in a prod env
-		$this->ft_response = $ft_client->request('GET', $this->ft_url);
-		$this->ft_data     = json_decode($this->ft_response->getBody(),1);
+		$ft_response       = $ft_client->request('GET', $this->ft_url);
+		$this->ft_data     = json_decode($ft_response->getBody(),1);
 
 	}
 
@@ -93,7 +93,6 @@ class FoodTruck {
 	 * fooditems - currently just 1 item (e.g. chicken)
 	 */
 	protected function filter_results() {
-
 
 		// do we need to do anything here?
 		if (! $this->type && ! $this->items) {
@@ -152,7 +151,7 @@ class FoodTruck {
 		$unit     = 'miles';
 		$theta    = $this->my_lat - $ft_lat;
 		$distance = (sin(deg2rad($this->my_lat)) * sin(deg2rad($ft_lat))) +
-		          	(cos(deg2rad($this->my_lat)) * cos(deg2rad($ft_lat)) * cos(deg2rad($theta))); 
+						(cos(deg2rad($this->my_lat)) * cos(deg2rad($ft_lat)) * cos(deg2rad($theta))); 
 
 		$distance = acos($distance); 
 		$distance = rad2deg($distance); 
