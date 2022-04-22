@@ -100,9 +100,10 @@ class FoodTruck {
 			if (! $this->result) {
 				// if we don't already have some filtered results - they get everything
 				$this->result = $this->ft_data;
-				return;
 			}
+			return;
 		}
+
 		$local_result = []; // temp results storage
 
 		// have we already filtered by location?
